@@ -9,8 +9,6 @@ class Node:
         if self.next is not None:
             self.next.printNode()
 
-
-
 class LinkedList:
 
     def __init__(self):
@@ -31,7 +29,6 @@ class LinkedList:
                 current = current.next
             current.next = newNode
 
-    
     def addSorted(self, data):
         newNode = Node(data)
         if self.head is None or data < self.head.data:
@@ -63,30 +60,67 @@ class LinkedList:
 
         if self.head is None:
             self.head = other_list.head
+            return
+        
+        if other_list.head is None:
+            return
+
+        # Pointeur pour la liste fusionnée
+        dummy = Node(0)
+        tail = dummy
+
+        current1 = self.head
+        current2 = other_list.head
+
+        while current1 is not None and current2 is not None:
+            if current1.data < current2.data:
+                tail.next = current1
+                current1 = current1.next
+            else:
+                tail.next = current2
+                current2 = current2.next
+            tail = tail.next
+
+        # Ajouter les éléments restants
+        if current1 is not None:
+            tail.next = current1
         else:
-            current = self.head
-            while current.next is not None:
-                current = current.next
-            current.next = other_list.head
-            other_list.head = None
+            tail.next = current2
 
+        # Mettre à jour la tête de la liste actuelle
+        self.head = dummy.next
+
+    
+    def get_head(self, n):
+        result = []
         current = self.head
-        previous = None
-
-        while current is not None:
-            next_node = current.next
-            while next_node is not None and next_node.data < current.data:
-                temp = next_node.next
-                next_node.next = current
-                current.next = temp
-                if previous is not None:
-                    previous.next = next_node
-                else:
-                    self.head = next_node
-                previous = next_node
-            previous = current
+        count = 0
+        while current is not None and count < n:
+            result.append(current.data)
             current = current.next
-
+            count += 1
+        return result
+    
+    def get_tail(self, n):
+        result = []
+        current = self.head
+        length = 0
+        # Calculer la longueur de la liste
+        while current is not None:
+            length += 1
+            current = current.next
+        # Trouver le début des n derniers éléments
+        if n > length:
+            n = length  # On ne peut pas demander plus que la taille de la liste
+        start_index = length - n
+        current = self.head
+        for _ in range(start_index):
+            current = current.next
+        # Récupérer les n derniers éléments
+        while current is not None:
+            result.append(current.data)
+            current = current.next
+        return result
 
 
 myLinkedList = LinkedList()
@@ -114,16 +148,25 @@ myLinkedList.remove(25)
 print("Les éléments dans la liste apres avoir supprimé 25 sont:")
 myLinkedList.printListRecRev()
 
-list1 = LinkedList()
-list1.addSorted(10)
-list1.addSorted(20)
-list1.addSorted(30)
+print("Les N premières valeurs de la liste sont:", myLinkedList.get_head(3))
+print("Les N dernières valeurs de la liste sont:", myLinkedList.get_tail(3))
 
-list2 = LinkedList()
-list2.addSorted(15)
-list2.addSorted(25)
-list2.addSorted(35)
+myLinkedList1 = LinkedList()
+myLinkedList2 = LinkedList()
 
-list1.merge(list2)
-print("Les éléments dans la liste après avoir fusionné sont:")
-list1.printListRecRev()
+myLinkedList1.addInTail(10)
+myLinkedList1.addInTail(20)
+myLinkedList1.addInTail(30)
+
+myLinkedList2.addInTail(15)
+myLinkedList2.addInTail(25)
+myLinkedList2.addInTail(35)
+
+print("Liste 1:")
+myLinkedList1.printListRecRev()
+print("Liste 2:")
+myLinkedList2.printListRecRev()
+
+myLinkedList1.merge(myLinkedList2)
+print("Liste fusionnée:")
+myLinkedList1.printListRecRev()
