@@ -22,12 +22,12 @@ def main():
         print("myNumber client received : ", myNumber)
         start_new_thread(threaded_server, (ClientSocket, myNumber))
 
-while True:
-    msg = input('') # bloquant les retours => nécessite un thread
-    ClientSocket.send(str.encode(msg))
-    if msg == "quit": # Bogue sur le quit !
-        ClientSocket.send(str.encode(str(myNumber)))
-    break
+    while True:
+        msg = input('') # bloquant les retours => nécessite un thread
+        ClientSocket.send(str.encode(msg))
+        if msg == "quit": # Bogue sur le quit !
+            ClientSocket.send(str.encode(str(myNumber)))
+        break
 
 def threaded_server(connection, num):
     while True:
